@@ -23,13 +23,13 @@ class TableEntry {
         //Crea una entrada solo con clave (sin valor)
         TableEntry(string key){
             this->key = key; 
-            this->value = NULL; 
+            this->value = V(); 
         }
 
         //Crea una entrada con clave "" (cadena vacía) y sin valor
         TableEntry(){
             this->key = ""; 
-            this->value = NULL; 
+            this->value = V(); 
         }
 
         /*Sobrecarga global del operador == para determinar que dos 

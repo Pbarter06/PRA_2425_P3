@@ -21,14 +21,15 @@ class HashTable: public Dict<V> {
         //METODOS
 
         //devuelve la posicion en la tabla de key
-        int h(string key){
+        int h(const string &key){
 
-            int sum = 0; 
+            unsigned long sum = 0;
 
-            for(int i = 0; i < n; i++){
-                sum += int(key[i]); 
+            // recorrer los caracteres de la clave (no usar 'n' que es el nº de elementos)
+            for (size_t i = 0; i < key.size(); ++i) {
+                sum += static_cast<unsigned char>(key[i]);
             }
-            return sum % max; 
+            return static_cast<int>(sum % static_cast<unsigned long>(max));
 
         }
             
@@ -62,8 +63,10 @@ class HashTable: public Dict<V> {
 
             out << '{'; 
             for(int i = 0; i < th.max; i++){
-                out << "Índice " << i << << ':' << th.table[i] << endl;
+                out << "Índice " << i << ':' << th.table[i] << endl;
             }
+            out << '}';
+            return out;
 
         }
 
