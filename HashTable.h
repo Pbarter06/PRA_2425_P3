@@ -15,66 +15,31 @@ class HashTable: public Dict<V> {
 
         //ATRIBUTOS
         int n; //numero de elementos almacenados en la tabla 
-        int max; //Tamaño de la tabla 
-        ListLinked<TableEntry<V>>* table; //Tabla de cubetas; almacena pares clave ->valor
+        int max; //Tamaño de la tabla (Num total de Cubetas)
+        ListLinked<TableEntry<V>>* table; //Tabla de cubetas; almacena pares clave ->valor. Se trata de un array de punterosa a listas enlazadas
 
         //METODOS
 
-        //devuelve la posicion en la tabla de key
+        /*Función hash que devuelve la posición (cubeta) en la tabla hash de key.  
+        Se calculará como el resto de la divisón entre la suma de los valores ASCII 
+        numéricos de los caracteres de la clave y el tamaño de la tabla hash*/
         int h(const string &key){
 
             unsigned long sum = 0;
 
             // recorrer los caracteres de la clave (no usar 'n' que es el nº de elementos)
-            for (size_t i = 0; i < key.size(); ++i) {
-                sum += static_cast<unsigned char>(key[i]);
+            for (size_t i = 0; i < key.size(); i++) {
+                sum += int(key.at(i));
             }
-            return static_cast<int>(sum % static_cast<unsigned long>(max));
+            return (sum % (unsigned long)(max));
 
-        }
+        } /*at(i) de std::string permite obtener el carácter situado en la posición i de un string, 
+           y la función int(c) permite obtener el valor ASCII numérico del carácter c.*/
             
 
 
     public:
         //METODOS
-
-        //Constructor. Reservará memoria dinámica
-        HashTable(int size){
-            max = size; 
-            n = 0; 
-            table = new ListLinked<TableEntry<V>>[max]; 
-            
-        }
-
-        //Destructor
-        ~HashTable(){
-            delete[] table;
-
-        }
-
-        //Devuelve el num total de cubetas de la tabla
-        int capacity(){
-            return max; 
-
-        }
-
-        //Sobrecarga global de << para imprimir el contenido de la tabla
-        friend ostream& operator<<(ostream &out, const HashTable<V> &th){
-
-            out << '{'; 
-            for(int i = 0; i < th.max; i++){
-                out << "Índice " << i << ':' << th.table[i] << endl;
-            }
-            out << '}';
-            return out;
-
-        }
-
-        //Sobrecarga de []. Devuelve el valor de key
-        V operator[](string key){
-            return search(key);
-
-        }
 
 
         //HEREDADAS
@@ -89,7 +54,7 @@ class HashTable: public Dict<V> {
             n++; 
          }
 
-         V search(string key)override {
+         V search(string key) override {
             int index = h(key); 
             TableEntry<V> te(key);
             int pos = table[index].search(te);
@@ -115,6 +80,52 @@ class HashTable: public Dict<V> {
             return n; 
 
          }
+
+
+        //FIN HEREDADOS
+
+        //Constructor. Reservará memoria dinámica
+        HashTable(int size){
+            max = size; 
+            n = 0; 
+            table = new ListLinked<TableEntry<V>>[max]; 
+            
+        }
+
+        //Destructor
+        ~HashTable(){
+            delete[] table;
+
+        }
+
+        //Devuelve el num total de cubetas de la tabla
+        int capacity(){
+            return max; 
+
+        }
+
+
+        //Sobrecarga de []. Devuelve el valor de key. Lanza excepción si no existe.
+        V operator[](string key){
+            return search(key);
+
+        }
+
+
+        //Sobrecarga global de << para imprimir el contenido de la tabla
+        friend ostream& operator<<(ostream &out, const HashTable<V> &th){
+
+            out << '{'; 
+            for(int i = 0; i < th.max; i++){
+                out << "Índice " << i << ':' << th.table[i] << endl;
+            }
+            out << '}';
+            return out;
+
+        }
+
+        
+
         
 };
 
