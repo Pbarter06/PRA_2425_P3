@@ -1,9 +1,11 @@
 #ifndef BSTREE_H
 #define BSTREE_H
-
+#include <stdexcept>
 #include <ostream>
 #include <stdexcept>
 #include "BSNode.h"
+
+using std::runtime_error;
 
 template <typename T> 
 class BSTree {
@@ -50,6 +52,7 @@ class BSTree {
             else n->left = insert(n->left, e); 
 
             //Devolver root
+            
             return n; 
         }
 
@@ -83,15 +86,16 @@ class BSTree {
             }
 
             else {
-                if (n->left != nullptr && n->der != nullptr){
+                if (n->left != nullptr && n->right != nullptr){
                     n->elem = max(n->left); 
-                    n->izq = remove_max(n->izq)
+                    n->left = remove_max(n->left);
                 } //2 desc
 
                 else {
-                    n = (n->izq != nullptr)? n->izq : n->der;
+                    n = (n->left != nullptr)? n->left : n->right;
                 } // 1 o 0 descendientes
             }
+            
             return n; 
         }
 
@@ -101,20 +105,20 @@ class BSTree {
                 throw runtime_error ("Elemento no encontrado"); 
             }
 
-            else if (n->der != nullptr){
-                return max(n->der);
+            else if (n->right != nullptr){
+                return max(n->right);
             }
 
-            else return n.elem;
+            else return n->elem;
         }
         //elimina el elemento de máximo valor contenido en el (sub-)árbol cuya raíz es n
         BSNode<T>* remove_max(BSNode<T>* n){
-            if (n->der == nullptr){
-                return n->izq; 
+            if (n->right == nullptr){
+                return n->left; 
             }
 
             else 
-                n->der = remove_max(n->der); 
+                n->right = remove_max(n->right); 
                 return n; 
         }
 
@@ -125,6 +129,7 @@ class BSTree {
             if (n != nullptr){
                 delete_cascade(n->left);
                 delete_cascade(n->right);
+
                 delete n; 
             }
         }
@@ -149,7 +154,7 @@ class BSTree {
         Actúa como método lanzadera del método privado recursivo search(BSNode<T>* n, T e).
         Deberá devolver el elemento contenido por el nodo devuelto por el método privado.*/
         T search(T e) const{
-            return search(root, e).elem; 
+            return search(root, e)->elem; 
         } //Es como un comprobador de que el elemento existe
         
 
@@ -161,11 +166,12 @@ class BSTree {
         /*Inserta el elemento e de manera ordenada en el BST. Método lanzadera del método privado*/
         void insert(T e){
             root = insert(root, e);
+            nelem++;
         }
 
         //Sobrecarga de << para mostrar los contenidos del BST, realizando un recorrido inorden ¡
         friend std::ostream& operator<<(std::ostream &out, const BSTree<T> &bst){
-            bst.print_inorder(out, bst); 
+            bst.print_inorder(out, bst.root); 
             return out; 
         }
 
@@ -173,6 +179,7 @@ class BSTree {
         //Elimina el elemento e del BST. 
         void remove(T e){
             root = remove(root, e);
+            nelem--;
         }
 
         //Destructor. Delega el método a privado

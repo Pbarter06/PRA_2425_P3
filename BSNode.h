@@ -2,6 +2,7 @@
 #define BSNODE_H
 
 #include <ostream>
+#include <stdexcept>
 
 template <typename T> 
 class BSNode {
@@ -24,7 +25,7 @@ class BSNode {
 
 
         //Sobrecarga de << para imprimir el nodo por pantalla. -> El elemento 
-        friend ostream& operator<<(outstream &out, const BSNode<T> &bsn){
+        friend std::ostream& operator<<(std::ostream &out, const BSNode<T> &bsn){
             out << bsn.elem; 
             return out; 
         }
