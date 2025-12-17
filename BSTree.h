@@ -52,7 +52,6 @@ class BSTree {
             else n->left = insert(n->left, e); 
 
             //Devolver root
-            
             return n; 
         }
 
